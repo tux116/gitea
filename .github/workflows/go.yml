@@ -29,18 +29,14 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-
-    - name: Build
-      run: |
-        TAGS="bindata" make backend
-
+        
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
       with:
         version: 12
-    
-    - name: make frontend
+
+    - name: Build
       run: |
-        make frontend
+        TAGS="bindata" make build
         sudo -E apt-get -y install tree
         tree ${PWD}

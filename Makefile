@@ -553,6 +553,16 @@ ifeq ($(CI),drone)
 	cp /build/* $(DIST)/binaries
 endif
 
+.PHONY: release-freebsd
+release-freebsd: | $(DIST_DIRS)
+	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
+		$(GO) get -u src.techknowlogick.com/xgo; \
+	fi
+	GO111MODULE=off xgo -go $(XGO_VERSION) -dest $(DIST)/binaries -tags 'netgo osusergo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'freebsd/*' -out gitea-$(VERSION) .
+ifeq ($(CI),drone)
+	cp /build/* $(DIST)/binaries
+endif
+
 .PHONY: release-copy
 release-copy: | $(DIST_DIRS)
 	cd $(DIST); for file in `find /build -type f -name "*"`; do cp $${file} ./release/; done;
